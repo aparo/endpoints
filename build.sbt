@@ -172,8 +172,8 @@ val `akka-http-server` =
     .settings(
       name := "endpoints-akka-http-server",
       libraryDependencies ++= Seq(
-        "com.typesafe.akka" %% "akka-http" % "10.0.1",
-        "com.typesafe.akka" %% "akka-http-testkit" % "10.0.1" % Test,
+        "com.typesafe.akka" %% "akka-http" % "10.0.5",
+        "com.typesafe.akka" %% "akka-http-testkit" % "10.0.5" % Test,
         "org.scalatest" %% "scalatest" % "3.0.1" % Test
       )
     )
@@ -341,8 +341,8 @@ val `example-cqrs-web-client` =
     .settings(noPublishSettings ++ `scala2.11`: _*)
     .settings(
       libraryDependencies ++= Seq(
-        "in.nvilla" %%% "monadic-html" % "0.2.2",
-        "in.nvilla" %%% "monadic-rx-cats" % "0.2.2",
+        "in.nvilla" %%% "monadic-html" % "0.2.3",
+        "in.nvilla" %%% "monadic-rx-cats" % "0.2.3",
         "org.julienrf" %%% "faithful-cats" % "0.2",
         "org.scala-js" %%% "scalajs-java-time" % "0.2.0"
       ),
