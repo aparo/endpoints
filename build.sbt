@@ -386,7 +386,7 @@ val `example-cqrs-commands` =
     .settings(noPublishSettings ++ `scala2.11`: _*)
     .settings(
       libraryDependencies ++= Seq(
-        "org.scalacheck" %% "scalacheck" % "1.13.4" % Test,
+        "org.scalacheck" %% "scalacheck" % "1.13.5" % Test,
         "org.scalatest" %% "scalatest" % "3.0.1" % Test
       )
     )
