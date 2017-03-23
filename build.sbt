@@ -69,7 +69,7 @@ val `algebra-js` = algebra.js
 
 val `algebra-jvm` = algebra.jvm
 
-val circeVersion = "0.6.1"
+val circeVersion = "0.7.0"
 
 val `algebra-circe` =
   crossProject.crossType(CrossType.Pure).in(file("algebra-circe"))
