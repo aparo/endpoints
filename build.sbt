@@ -186,7 +186,7 @@ val `akka-http-server-circe` =
     .settings(
       name := "endpoints-akka-http-server-circe",
       libraryDependencies ++= Seq(
-        "de.heikoseeberger" %% "akka-http-circe" % "1.11.0"
+        "de.heikoseeberger" %% "akka-http-circe" % "1.14.0"
       )
     )
     .dependsOn(`akka-http-server`, `algebra-circe-jvm`)
