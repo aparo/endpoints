@@ -114,7 +114,7 @@ val `xhr-client-circe` =
     )
     .dependsOn(`xhr-client`, `algebra-circe-js`)
 
-val playVersion = "2.5.6"
+val playVersion = "2.5.13"
 
 val `play-circe` =
   project.in(file("play-circe"))
