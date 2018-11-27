@@ -109,10 +109,9 @@ class JsonSchemasTest extends FreeSpec {
     lazy val localDateJsonSchema: String = "string"
     lazy val localDatetimeJsonSchema: String = "string"
 
-    def mapJsonSchema[C[String, X] <: Map[String, X], A](implicit
-                                                         jsonSchema: JsonSchema[A],
-                                                         cbf: CanBuildFrom[_, (String, A), C[String, A]]
-                                                        ): String = s"{string:$jsonSchema}"
+    def mapJsonSchema[V](implicit
+                                  jsonSchema: JsonSchema[V]
+                                 ): String = s"{string:$jsonSchema}"
   }
   "case class" in {
     val expectedSchema = "'endpoints.generic.JsonSchemasTest.GenericSchemas.Foo'!('endpoints.generic.JsonSchemasTest.GenericSchemas.Foo'!(bar:string,baz:integer,qux:boolean?,$))"

@@ -1,8 +1,9 @@
 package endpoints.algebra
 
+import java.time._
+
 import scala.collection.generic.CanBuildFrom
 import scala.language.higherKinds
-import java.time._
 
 /**
   * An algebra interface for describing algebraic data types. Such descriptions
@@ -194,10 +195,9 @@ trait JsonSchemas {
 
   //https://stackoverflow.com/questions/27357861/dictionary-like-json-schema
   /** A JSON schema for map[String,X] */
-  implicit def mapJsonSchema[C[_, X] <: Map[String, X], A](implicit
-                                                jsonSchema: JsonSchema[A],
-                                                cbf: CanBuildFrom[_, (String,A), C[String, A]]
-                                               ): JsonSchema[C[String, A]]
+  implicit def mapJsonSchema[V](implicit
+                                jsonSchema: JsonSchema[V]
+                               ): JsonSchema[Map[String, V]]
 
 
 }

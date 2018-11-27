@@ -175,12 +175,12 @@ trait JsonSchemas
   implicit def byteJsonSchema: JsonSchema[Byte] = JsonSchema(implicitly, implicitly)
   implicit def shortJsonSchema: JsonSchema[Short] = JsonSchema(implicitly, implicitly)
 
-  import io.circe.java8.time._
-  implicit def offsetDatetimeJsonSchema: JsonSchema[OffsetDateTime]= JsonSchema(implicitly, implicitly)
 
-  implicit def localDateJsonSchema: JsonSchema[LocalDate]= JsonSchema(implicitly, implicitly)
+  implicit def offsetDatetimeJsonSchema: JsonSchema[OffsetDateTime]= JsonSchema(io.circe.java8.time.encodeOffsetDateTime, io.circe.java8.time.decodeOffsetDateTime)
 
-  implicit def localDatetimeJsonSchema: JsonSchema[LocalDateTime]= JsonSchema(implicitly, implicitly)
+  implicit def localDateJsonSchema: JsonSchema[LocalDate]= JsonSchema(io.circe.java8.time.encodeLocalDate, io.circe.java8.time.decodeLocalDate)
+
+  implicit def localDatetimeJsonSchema: JsonSchema[LocalDateTime]= JsonSchema(io.circe.java8.time.encodeLocalDateTime, io.circe.java8.time.decodeLocalDateTime)
 
   implicit def arrayJsonSchema[C[X] <: Seq[X], A](implicit jsonSchema: JsonSchema[A], cbf: CanBuildFrom[_, A, C[A]]): JsonSchema[C[A]] =
     JsonSchema(
@@ -197,9 +197,14 @@ trait JsonSchemas
       io.circe.Decoder.decodeIterable[A, C](jsonSchema.decoder, cbf)
     )
 
-  implicit def mapJsonSchema[C[_, X] <: Map[String, X], A](implicit
-                                                                jsonSchema: JsonSchema[A],
-                                                                cbf: CanBuildFrom[_, (String,A), C[String, A]]
-                                                               ): JsonSchema[C[String, A]] = JsonSchema(implicitly, implicitly)
+  implicit def mapJsonSchema[V](implicit
+                                jsonSchema: JsonSchema[V]
+                               ): JsonSchema[Map[String, V]] = {
+    implicit val enca=jsonSchema.encoder
+    implicit val deca=jsonSchema.decoder
+    val enc=implicitly[Encoder[Map[String,V]]]
+    val dec=implicitly[Decoder[Map[String,V]]]
+    JsonSchema(enc,dec)
+  }
 
 }

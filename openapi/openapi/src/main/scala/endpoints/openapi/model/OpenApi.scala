@@ -234,6 +234,12 @@ object Schema {
             "format_options" -> Json.fromString(options) ::
             Nil
         )
+      case Primitive(name, None, Some(options)) =>
+        JsonObject.fromIterable(
+          "type" -> Json.fromString(name) ::
+            "format_options" -> Json.fromString(options) ::
+            Nil
+        )
       case Array(elementType) =>
         JsonObject.fromIterable(
           "type" -> Json.fromString("array") ::

@@ -28,18 +28,20 @@ trait JsonSchemas extends endpoints.algebra.JsonSchemas {
   object DocumentedJsonSchema {
 
     case class DocumentedRecord(fields: List[Field], name: Option[String] = None,
-                                additionalProperties:Option[DocumentedJsonSchema] = None) extends DocumentedJsonSchema
+                                additionalProperties: Option[DocumentedJsonSchema] = None) extends DocumentedJsonSchema
+
     case class Field(name: String, tpe: DocumentedJsonSchema, isOptional: Boolean, documentation: Option[String])
 
     case class DocumentedCoProd(alternatives: List[(String, DocumentedRecord)],
                                 name: Option[String] = None,
                                 discriminatorName: String = defaultDiscriminatorName) extends DocumentedJsonSchema
 
-    case class Primitive(name: String, format: Option[String] = None, formatOptions:Option[String]=None) extends DocumentedJsonSchema
+    case class Primitive(name: String, format: Option[String] = None, formatOptions: Option[String] = None) extends DocumentedJsonSchema
 
     case class Array(elementType: DocumentedJsonSchema) extends DocumentedJsonSchema
 
     case class DocumentedEnum(elementType: DocumentedJsonSchema, values: Seq[String]) extends DocumentedJsonSchema
+
   }
 
   def enumeration[A](values: Seq[A])(encode: A => String)(implicit tpe: JsonSchema[String]): DocumentedEnum =
@@ -106,31 +108,31 @@ trait JsonSchemas extends endpoints.algebra.JsonSchemas {
   lazy val byteJsonSchema: JsonSchema[Byte] = Primitive("integer", format = Some("int8"))
 
   /** A JSON schema for type `BigInt` */
-  lazy val bigintJsonSchema: JsonSchema[BigInt]= Primitive("integer", format = Some("int128"))
+  lazy val bigintJsonSchema: JsonSchema[BigInt] = Primitive("integer", format = Some("int128"))
 
 
   /** A JSON schema for type `OffsetDateTime` */
-  lazy val offsetDatetimeJsonSchema: JsonSchema[OffsetDateTime]=Primitive("string", format = Some("date-time"), formatOptions=Some("offset"))
+  lazy val offsetDatetimeJsonSchema: JsonSchema[OffsetDateTime] = Primitive("string", format = Some("date-time"), formatOptions = Some("offset"))
 
   /** A JSON schema for type `LocalDate` */
-  lazy val localDateJsonSchema: JsonSchema[LocalDate]=Primitive("string", format = Some("date"))
+  lazy val localDateJsonSchema: JsonSchema[LocalDate] = Primitive("string", format = Some("date"))
 
   /** A JSON schema for type `LocalDateTime` */
-  lazy val localDatetimeJsonSchema: JsonSchema[LocalDateTime]=Primitive("string", format = Some("date-time"))
+  lazy val localDatetimeJsonSchema: JsonSchema[LocalDateTime] = Primitive("string", format = Some("date-time"))
 
 
   def arrayJsonSchema[C[X] <: Seq[X], A](implicit
-    jsonSchema: JsonSchema[A],
-    cbf: CanBuildFrom[_, A, C[A]]
-  ): JsonSchema[C[A]] = Array(jsonSchema)
+                                         jsonSchema: JsonSchema[A],
+                                         cbf: CanBuildFrom[_, A, C[A]]
+                                        ): JsonSchema[C[A]] = Array(jsonSchema)
 
   def setJsonSchema[C[X] <: Set[X], A](implicit
-                                                jsonSchema: JsonSchema[A],
-                                                cbf: CanBuildFrom[_, A, C[A]]
-                                               ): JsonSchema[C[A]] = Array(jsonSchema)
+                                       jsonSchema: JsonSchema[A],
+                                       cbf: CanBuildFrom[_, A, C[A]]
+                                      ): JsonSchema[C[A]] = Array(jsonSchema)
 
-  def mapJsonSchema[C[_, X] <: Map[String, X], A](implicit
-                                                                jsonSchema: JsonSchema[A],
-                                                                cbf: CanBuildFrom[_, (String,A), C[String, A]]
-                                                               ): JsonSchema[C[String, A]] = DocumentedRecord(fields=Nil, additionalProperties=Some(jsonSchema))
+  implicit def mapJsonSchema[V](implicit
+                                jsonSchema: JsonSchema[V]
+                               ): JsonSchema[Map[String, V]] = DocumentedRecord(fields = Nil, additionalProperties = Some(jsonSchema))
+
 }
