@@ -32,6 +32,11 @@ class JsonSchemasMacrosTest extends FreeSpec {
     assert(fooSchema == "'endpoints.macros.ExampleDomain.Foo'!(bar:string,baz:int,qux:boolean?)")
   }
 
+  "macros derive JsonSchema for case class with special types" in {
+
+    assert(fooSpecialSchema == "'endpoints.macros.ExampleDomain.FooSpecial'!(set:set{int},foo)")
+  }
+
   "macros derive JsonSchema for sequence types" in {
 
     assert(listIntSchema == "[int]")

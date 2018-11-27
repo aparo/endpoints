@@ -5,6 +5,8 @@ trait ExampleDomain extends JsonSchemas {
 
   case class Foo(bar: String, baz: Int, qux: Option[Boolean])
 
+  case class FooSpecial(set: Set[Int], map:Map[String, Foo])
+
   sealed trait Quux
   case class QuuxA(ss: List[Foo]) extends Quux
   case class QuuxB(i: Int) extends Quux
@@ -20,6 +22,9 @@ trait ExampleDomain extends JsonSchemas {
 
   object JsonSchemas {
     implicit val fooSchema: JsonSchema[Foo] = genericJsonSchema[Foo]
+
+    implicit val fooSpecialSchema: JsonSchema[FooSpecial] = genericJsonSchema[FooSpecial]
+
 
     val listIntSchema: JsonSchema[List[Int]] = genericJsonSchema[List[Int]]
     val seqFooSchema: JsonSchema[List[Foo]] = genericJsonSchema[List[Foo]]

@@ -97,6 +97,12 @@ class JsonSchemasTest extends FreeSpec {
                                            jsonSchema: String,
                                            cbf: CanBuildFrom[_, A, C[A]]
                                           ): String = s"[$jsonSchema]"
+
+    def setJsonSchema[C[X] <: Set[X], A](implicit
+                                                  jsonSchema: JsonSchema[A],
+                                                  cbf: CanBuildFrom[_, A, C[A]]
+                                                 ): String = s"{$jsonSchema}"
+
   }
 
   "case class" in {

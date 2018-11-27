@@ -84,4 +84,8 @@ trait JsonSchemasTestInterpreter extends endpoints.algebra.JsonSchemas {
   implicit def arrayJsonSchema[C[X] <: Seq[X], A](implicit jsonSchema: JsonSchema[A],
                                                   cbf: CanBuildFrom[_, A, C[A]]): JsonSchema[C[A]] =
     s"[$jsonSchema]"
+
+  implicit def setJsonSchema[C[X] <: Set[X], A](implicit jsonSchema: JsonSchema[A],
+                                                  cbf: CanBuildFrom[_, A, C[A]]): JsonSchema[C[A]] =
+    s"{$jsonSchema}"
 }

@@ -186,4 +186,12 @@ trait JsonSchemas {
     cbf: CanBuildFrom[_, A, C[A]]
   ): JsonSchema[C[A]]
 
+  /** A JSON schema for sets */
+  implicit def setJsonSchema[C[X] <: Set[X], A](implicit
+                                                  jsonSchema: JsonSchema[A],
+                                                  cbf: CanBuildFrom[_, A, C[A]]
+                                                 ): JsonSchema[C[A]]
+
+
+  
 }

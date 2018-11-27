@@ -122,4 +122,10 @@ trait JsonSchemas extends endpoints.algebra.JsonSchemas {
     jsonSchema: JsonSchema[A],
     cbf: CanBuildFrom[_, A, C[A]]
   ): JsonSchema[C[A]] = Array(jsonSchema)
+
+  def setJsonSchema[C[X] <: Set[X], A](implicit
+                                                jsonSchema: JsonSchema[A],
+                                                cbf: CanBuildFrom[_, A, C[A]]
+                                               ): JsonSchema[C[A]] = Array(jsonSchema)
+
 }
