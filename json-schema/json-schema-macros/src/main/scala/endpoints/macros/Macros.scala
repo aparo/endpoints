@@ -1,5 +1,7 @@
 package endpoints.macros
 
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
+
 import scala.reflect.macros.blackbox
 
 class Macros(val c: blackbox.Context) extends Utils {
@@ -34,7 +36,10 @@ class Macros(val c: blackbox.Context) extends Utils {
     typeOf[Boolean],
     typeOf[Short],
     typeOf[BigInt],
-    typeOf[Byte]
+    typeOf[Byte],
+    typeOf[LocalDate],
+    typeOf[LocalDateTime],
+    typeOf[OffsetDateTime]
   )
 
   private def findRecord(tpe: Type): Option[c.Tree] = {

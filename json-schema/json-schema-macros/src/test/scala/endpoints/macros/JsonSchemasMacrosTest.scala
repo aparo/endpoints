@@ -1,5 +1,7 @@
 package endpoints.macros
 
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
+
 import org.scalatest.FreeSpec
 
 class JsonSchemasMacrosTest extends FreeSpec {
@@ -16,6 +18,13 @@ class JsonSchemasMacrosTest extends FreeSpec {
     assert(genericJsonSchema[Float] == "float")
     assert(genericJsonSchema[Double] == "double")
     assert(genericJsonSchema[Boolean] == "boolean")
+    assert(genericJsonSchema[Short] == "short")
+    assert(genericJsonSchema[Byte] == "byte")
+    assert(genericJsonSchema[BigInt] == "bigint")
+    assert(genericJsonSchema[OffsetDateTime] == "offsetdatetime")
+    assert(genericJsonSchema[LocalDate] == "localdate")
+    assert(genericJsonSchema[LocalDateTime] == "datetime")
+
   }
 
   "macros derive JsonSchema for case class" in {

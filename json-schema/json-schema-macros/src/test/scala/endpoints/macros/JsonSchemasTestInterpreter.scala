@@ -1,5 +1,7 @@
 package endpoints.macros
 
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
+
 import scala.collection.generic.CanBuildFrom
 import scala.language.{higherKinds, implicitConversions}
 
@@ -73,6 +75,11 @@ trait JsonSchemasTestInterpreter extends endpoints.algebra.JsonSchemas {
 
   implicit def shortJsonSchema: JsonSchema[Short] = "short"
 
+  implicit def offsetDatetimeJsonSchema: JsonSchema[OffsetDateTime] = "offsetdatetime"
+
+  implicit def localDateJsonSchema: JsonSchema[LocalDate] = "localdate"
+
+  implicit def localDatetimeJsonSchema: JsonSchema[LocalDateTime] = "datetime"
 
   implicit def arrayJsonSchema[C[X] <: Seq[X], A](implicit jsonSchema: JsonSchema[A],
                                                   cbf: CanBuildFrom[_, A, C[A]]): JsonSchema[C[A]] =
