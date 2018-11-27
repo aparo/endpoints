@@ -24,6 +24,7 @@ val `algebra-circe` =
       name := "endpoints-algebra-circe",
       libraryDependencies ++= Seq(
         "io.circe" %%% "circe-parser" % circeVersion,
+        "io.circe" %%% "circe-java8" % circeVersion,
         "io.circe" %%% "circe-generic" % circeVersion % Test,
         compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" % Test cross CrossVersion.full)
       )

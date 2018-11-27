@@ -7,7 +7,9 @@ val `json-schema` =
     .settings(
       name := "endpoints-algebra-json-schema",
       addScalaTestCrossDependency
-    )
+    ).jsSettings(
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTime
+  )
 
 val `json-schema-js` = `json-schema`.js
 val `json-schema-jvm` = `json-schema`.jvm
