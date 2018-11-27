@@ -120,7 +120,7 @@ trait Endpoints
         captureReferencedSchemasRec(elementType)
       case Schema.Enum(elementType, _) =>
         captureReferencedSchemasRec(elementType)
-      case Schema.Primitive(_, _) =>
+      case Schema.Primitive(_, _, _) =>
         Nil
       case Schema.OneOf(_, alternatives, _) =>
         alternatives.map(_._2).flatMap(captureReferencedSchemasRec)

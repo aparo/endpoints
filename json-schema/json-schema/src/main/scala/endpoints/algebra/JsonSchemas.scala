@@ -2,6 +2,7 @@ package endpoints.algebra
 
 import scala.collection.generic.CanBuildFrom
 import scala.language.higherKinds
+import java.time._
 
 /**
   * An algebra interface for describing algebraic data types. Such descriptions
@@ -168,6 +169,16 @@ trait JsonSchemas {
 
   /** A JSON schema for type `BigInt` */
   implicit def bigintJsonSchema: JsonSchema[BigInt]
+
+  /** A JSON schema for type `OffsetDateTime` */
+  implicit def offsetDatetimeJsonSchema: JsonSchema[OffsetDateTime]
+
+  /** A JSON schema for type `LocalDate` */
+  implicit def localDateJsonSchema: JsonSchema[LocalDate]
+
+  /** A JSON schema for type `LocalDateTime` */
+  implicit def localDatetimeJsonSchema: JsonSchema[LocalDateTime]
+
 
   /** A JSON schema for sequences */
   implicit def arrayJsonSchema[C[X] <: Seq[X], A](implicit

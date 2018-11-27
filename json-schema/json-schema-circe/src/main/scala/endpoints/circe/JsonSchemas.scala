@@ -1,6 +1,8 @@
 package endpoints
 package circe
 
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
+
 import endpoints.algebra.circe.CirceCodec
 import io.circe._
 
@@ -173,6 +175,12 @@ trait JsonSchemas
   implicit def byteJsonSchema: JsonSchema[Byte] = JsonSchema(implicitly, implicitly)
   implicit def shortJsonSchema: JsonSchema[Short] = JsonSchema(implicitly, implicitly)
 
+  import io.circe.java8.time._
+  implicit def offsetDatetimeJsonSchema: JsonSchema[OffsetDateTime]= JsonSchema(implicitly, implicitly)
+
+  implicit def localDateJsonSchema: JsonSchema[LocalDate]= JsonSchema(implicitly, implicitly)
+
+  implicit def localDatetimeJsonSchema: JsonSchema[LocalDateTime]= JsonSchema(implicitly, implicitly)
 
   implicit def arrayJsonSchema[C[X] <: Seq[X], A](implicit jsonSchema: JsonSchema[A], cbf: CanBuildFrom[_, A, C[A]]): JsonSchema[C[A]] =
     JsonSchema(

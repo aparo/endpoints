@@ -1,5 +1,7 @@
 package endpoints.playjson
 
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
+
 import endpoints.algebra
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -110,8 +112,16 @@ trait JsonSchemas
   }
 
   implicit def bigintJsonSchema: JsonSchema[scala.math.BigInt] = JsonSchema(implicitly, implicitly)
+
   implicit def byteJsonSchema: JsonSchema[Byte] = JsonSchema(implicitly, implicitly)
+
   implicit def shortJsonSchema: JsonSchema[Short] = JsonSchema(implicitly, implicitly)
+
+  implicit def offsetDatetimeJsonSchema: JsonSchema[OffsetDateTime]= JsonSchema(implicitly, implicitly)
+
+  implicit def localDateJsonSchema: JsonSchema[LocalDate]= JsonSchema(implicitly, implicitly)
+
+  implicit def localDatetimeJsonSchema: JsonSchema[LocalDateTime]= JsonSchema(implicitly, implicitly)
 
   implicit def arrayJsonSchema[C[X] <: Seq[X], A](implicit jsonSchema: JsonSchema[A], cbf: CanBuildFrom[_, A, C[A]]): JsonSchema[C[A]] =
     JsonSchema(

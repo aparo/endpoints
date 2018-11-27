@@ -199,7 +199,7 @@ object Schema {
 
   case class Property(name: String, schema: Schema, isRequired: Boolean, description: Option[String])
 
-  case class Primitive(name: String, format: Option[String]) extends Schema
+  case class Primitive(name: String, format: Option[String], formatOptions:Option[String]=None) extends Schema
 
   case class OneOf(discriminatorName: String, alternatives: List[(String, Schema)], description: Option[String]) extends Schema
 
@@ -217,12 +217,19 @@ object Schema {
 
   implicit val jsonEncoder: ObjectEncoder[Schema] =
     ObjectEncoder.instance {
-      case Primitive(name, None) =>
+      case Primitive(name, None, None) =>
         JsonObject.singleton("type", Json.fromString(name))
-      case Primitive(name, Some(format)) =>
+      case Primitive(name, Some(format), None) =>
         JsonObject.fromIterable(
           "type" -> Json.fromString(name) ::
             "format" -> Json.fromString(format) ::
+            Nil
+        )
+      case Primitive(name, Some(format), Some(options)) =>
+        JsonObject.fromIterable(
+          "type" -> Json.fromString(name) ::
+            "format" -> Json.fromString(format) ::
+            "format_options" -> Json.fromString(options) ::
             Nil
         )
       case Array(elementType) =>

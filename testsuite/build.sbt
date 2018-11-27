@@ -15,7 +15,7 @@ val testsuite =
         compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
       )
     )
-    .dependsOnLocalCrossProjects("algebra", "algebra-circe", "algebra-playjson")
+    .dependsOnLocalCrossProjects("algebra", "algebra-circe" /*, "algebra-playjson"*/)
 
 val `testsuite-js` = testsuite.js
 

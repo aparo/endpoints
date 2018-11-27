@@ -1,6 +1,8 @@
 package endpoints
 package openapi
 
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
+
 import endpoints.algebra.Documentation
 
 import scala.collection.generic.CanBuildFrom
@@ -32,7 +34,7 @@ trait JsonSchemas extends endpoints.algebra.JsonSchemas {
                                 name: Option[String] = None,
                                 discriminatorName: String = defaultDiscriminatorName) extends DocumentedJsonSchema
 
-    case class Primitive(name: String, format: Option[String] = None) extends DocumentedJsonSchema
+    case class Primitive(name: String, format: Option[String] = None, formatOptions:Option[String]=None) extends DocumentedJsonSchema
 
     case class Array(elementType: DocumentedJsonSchema) extends DocumentedJsonSchema
 
@@ -104,6 +106,16 @@ trait JsonSchemas extends endpoints.algebra.JsonSchemas {
 
   /** A JSON schema for type `BigInt` */
   lazy val bigintJsonSchema: JsonSchema[BigInt]= Primitive("integer", format = Some("int128"))
+
+
+  /** A JSON schema for type `OffsetDateTime` */
+  lazy val offsetDatetimeJsonSchema: JsonSchema[OffsetDateTime]=Primitive("string", format = Some("date-time"), formatOptions=Some("offset"))
+
+  /** A JSON schema for type `LocalDate` */
+  lazy val localDateJsonSchema: JsonSchema[LocalDate]=Primitive("string", format = Some("date"))
+
+  /** A JSON schema for type `LocalDateTime` */
+  lazy val localDatetimeJsonSchema: JsonSchema[LocalDateTime]=Primitive("string", format = Some("date-time"))
 
 
   def arrayJsonSchema[C[X] <: Seq[X], A](implicit
