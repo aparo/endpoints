@@ -8,7 +8,7 @@ lazy val openapi =
       name := "endpoints-openapi",
       libraryDependencies += "io.circe" %%% "circe-core" % circeVersion
     )
-    .dependsOnLocalCrossProjects("json-schema-generic")
+    .dependsOnLocalCrossProjects("json-schema-macros")
     .dependsOnLocalCrossProjectsWithScope("algebra" -> "test->test;compile->compile", "json-schema" -> "test->test;compile->compile")
 
 lazy val `openapi-js` = openapi.js

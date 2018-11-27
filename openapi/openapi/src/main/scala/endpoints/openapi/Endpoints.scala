@@ -114,8 +114,9 @@ trait Endpoints
 
   private def captureReferencedSchemasRec(schema: Schema): Seq[Schema.Reference] =
     schema match {
-      case Schema.Object(properties, _) =>
-        properties.map(_.schema).flatMap(captureReferencedSchemasRec)
+      case Schema.Object(properties, _, additionalProperties) =>
+        properties.map(_.schema).flatMap(captureReferencedSchemasRec) ++
+          (if(additionalProperties.isDefined) captureReferencedSchemasRec(additionalProperties.get) else Nil)
       case Schema.Array(elementType) =>
         captureReferencedSchemasRec(elementType)
       case Schema.Enum(elementType, _) =>

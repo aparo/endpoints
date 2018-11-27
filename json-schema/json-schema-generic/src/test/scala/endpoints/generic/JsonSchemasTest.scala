@@ -1,6 +1,8 @@
 package endpoints
 package generic
 
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
+
 import org.scalatest.FreeSpec
 
 import scala.collection.generic.CanBuildFrom
@@ -99,12 +101,19 @@ class JsonSchemasTest extends FreeSpec {
                                           ): String = s"[$jsonSchema]"
 
     def setJsonSchema[C[X] <: Set[X], A](implicit
-                                                  jsonSchema: JsonSchema[A],
-                                                  cbf: CanBuildFrom[_, A, C[A]]
-                                                 ): String = s"{$jsonSchema}"
+                                         jsonSchema: JsonSchema[A],
+                                         cbf: CanBuildFrom[_, A, C[A]]
+                                        ): String = s"{$jsonSchema}"
 
+    lazy val offsetDatetimeJsonSchema: String = "string"
+    lazy val localDateJsonSchema: String = "string"
+    lazy val localDatetimeJsonSchema: String = "string"
+
+    def mapJsonSchema[C[String, X] <: Map[String, X], A](implicit
+                                                         jsonSchema: JsonSchema[A],
+                                                         cbf: CanBuildFrom[_, (String, A), C[String, A]]
+                                                        ): String = s"{string:$jsonSchema}"
   }
-
   "case class" in {
     val expectedSchema = "'endpoints.generic.JsonSchemasTest.GenericSchemas.Foo'!('endpoints.generic.JsonSchemasTest.GenericSchemas.Foo'!(bar:string,baz:integer,qux:boolean?,$))"
     assert(FakeAlgebraJsonSchemas.Foo.schema == expectedSchema)

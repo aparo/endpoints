@@ -25,9 +25,9 @@ trait JsonSchemaEntities
   def toSchema(documentedCodec: DocumentedJsonSchema, coprodBase: Option[DocumentedCoProd] = None): Schema = {
 
     documentedCodec match {
-      case record @ DocumentedRecord(_, Some(name)) =>
+      case record @ DocumentedRecord(_, Some(name), _) =>
         Schema.Reference(name, Some(expandRecordSchema(record, coprodBase)))
-      case record @ DocumentedRecord(_, None) =>
+      case record @ DocumentedRecord(_, None, _) =>
         expandRecordSchema(record)
       case coprod @ DocumentedCoProd(_, Some(name), _) =>
         Schema.Reference(name, Some(expandCoproductSchema(coprod)))
@@ -43,11 +43,16 @@ trait JsonSchemaEntities
   }
 
   private def expandRecordSchema(record: DocumentedJsonSchema.DocumentedRecord, coprodBase: Option[DocumentedCoProd] = None): Schema = {
-    val fieldsSchema = record.fields
+    var fieldsSchema = record.fields
       .map(f => Schema.Property(f.name, toSchema(f.tpe), !f.isOptional, f.documentation))
 
+    val additionalProperties=record.additionalProperties.map{
+      addProps =>
+        expandRecordSchema(addProps.asInstanceOf[DocumentedJsonSchema.DocumentedRecord]).asInstanceOf[Schema.Object]
+    }
+    //TODO check on sealed for additional properties
     coprodBase.fold[Schema] {
-      Schema.Object(fieldsSchema, None)
+      Schema.Object(fieldsSchema, None, additionalProperties)
     } { coprod =>
       val discriminatorField =
         Schema.Property(coprod.discriminatorName, Schema.simpleString, isRequired = true, description = None)

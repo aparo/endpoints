@@ -1,7 +1,7 @@
 package endpoints.openapi
 
 import endpoints.openapi.model._
-import endpoints.{algebra, generic, openapi}
+import endpoints.{algebra, macros, openapi}
 import org.scalatest.{Matchers, WordSpec}
 
 class ReferencedSchemaTest extends WordSpec with Matchers {
@@ -10,16 +10,23 @@ class ReferencedSchemaTest extends WordSpec with Matchers {
   case class StorageLibrary(room: String, shelf: Int) extends Storage
   case class StorageOnline(link: String) extends Storage
 
-  case class Book(id: Int, title: String, author: String, isbnCodes: List[String], storage: Storage)
+  case class Book(id: Int, title: String, author: String, isbnCodes: List[String], storage: Storage,
+                  sets:List[Int])
+
+  case class Storages(onlineStorages:Map[String, StorageOnline])
 
   object Fixtures extends Fixtures with openapi.Endpoints with openapi.JsonSchemaEntities {
 
     def openApi: OpenApi = openApi(
       Info(title = "TestFixturesOpenApi", version = "0.0.0")
-    )(Fixtures.listBooks, Fixtures.postBook)
+    )(Fixtures.listBooks, Fixtures.postBook, Fixtures.listStorages)
   }
 
-  trait Fixtures extends algebra.Endpoints with algebra.JsonSchemaEntities with generic.JsonSchemas {
+  trait Fixtures extends algebra.Endpoints with algebra.JsonSchemaEntities with macros.JsonSchemas {
+
+    implicit private val storageOnlineBook: JsonSchema[StorageOnline] = genericJsonSchema[StorageOnline]
+
+    implicit private val storagesBook: JsonSchema[Storages] = genericJsonSchema[Storages]
 
     implicit private val schemaStorage: JsonSchema[Storage] =
       withDiscriminator(genericJsonSchema[Storage].asInstanceOf[Tagged[Storage]], "storageType")
@@ -29,6 +36,9 @@ class ReferencedSchemaTest extends WordSpec with Matchers {
     val listBooks = endpoint(get(path / "books"), jsonResponse[List[Book]](Some("Books list")), tags = List("Books"))
 
     val postBook = endpoint(post(path / "books", jsonRequest[Book](docs = Some("Books list"))), emptyResponse(), tags = List("Books"))
+
+    val listStorages = endpoint(get(path / "storages"), jsonResponse[List[Storages]](Some("Storage list")), tags = List("Storage"))
+
   }
 
   "OpenApi" should {
@@ -47,7 +57,8 @@ class ReferencedSchemaTest extends WordSpec with Matchers {
           |          "title",
           |          "author",
           |          "isbnCodes",
-          |          "storage"
+          |          "storage",
+          |          "sets"
           |        ],
           |        "type" : "object",
           |        "properties" : {
@@ -69,6 +80,13 @@ class ReferencedSchemaTest extends WordSpec with Matchers {
           |          },
           |          "storage" : {
           |            "$ref" : "#/components/schemas/endpoints.openapi.ReferencedSchemaTest.Storage"
+          |          },
+          |          "sets" : {
+          |            "type" : "array",
+          |            "items" : {
+          |              "type" : "integer",
+          |              "format" : "int32"
+          |            }
           |          }
           |        }
           |      },

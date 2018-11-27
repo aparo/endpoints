@@ -191,7 +191,7 @@ sealed trait Schema
 
 object Schema {
 
-  case class Object(properties: List[Property], description: Option[String]) extends Schema
+  case class Object(properties: List[Property], description: Option[String], additionalProperties:Option[Schema]=None) extends Schema
 
   case class Array(elementType: Schema) extends Schema
 
@@ -240,7 +240,7 @@ object Schema {
         )
       case Enum(elementType, values) =>
         jsonEncoder.encodeObject(elementType).add("enum", Json.fromValues(values.map(Json.fromString)))
-      case Object(properties, description) =>
+      case Object(properties, description, additionalProperties) =>
         val fields =
           "type" -> Json.fromString("object") ::
             "properties" -> Json.fromFields(
@@ -254,13 +254,16 @@ object Schema {
               }
             ) ::
             Nil
+        val additionalProps:List[(String,Json)] = additionalProperties.map(ap => "additionalProperties" -> jsonEncoder(ap)).toList
+
+
         val fieldsWithDescription =
           description.fold(fields)(s => "description" -> Json.fromString(s) :: fields)
         val requiredProperties = properties.filter(_.isRequired)
         val fieldsWithRequired =
           if (requiredProperties.isEmpty) fieldsWithDescription
           else "required" -> Json.arr(requiredProperties.map(p => Json.fromString(p.name)): _*) :: fieldsWithDescription
-        JsonObject.fromIterable(fieldsWithRequired)
+        JsonObject.fromIterable(fieldsWithRequired ++ additionalProps)
       case OneOf(discriminatorName, alternatives, description) =>
         val mapping = alternatives.collect { case (tag, Schema.Reference(name, _)) =>
           tag -> Json.fromString(Reference.toRefPath(name))

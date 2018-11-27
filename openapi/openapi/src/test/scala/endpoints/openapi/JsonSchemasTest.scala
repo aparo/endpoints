@@ -39,4 +39,9 @@ class JsonSchemasTest extends FreeSpec {
     assert(DocumentedJsonSchemas.Enum.colorSchema == expectedSchema)
   }
 
+  "special fields" in {
+    val expectedSchema =
+      DocumentedEnum(DocumentedJsonSchemas.stringJsonSchema, Seq("Red", "Blue"))
+    assert(DocumentedJsonSchemas.Enum.colorSchema == expectedSchema)
+  }
 }

@@ -27,7 +27,8 @@ trait JsonSchemas extends endpoints.algebra.JsonSchemas {
 
   object DocumentedJsonSchema {
 
-    case class DocumentedRecord(fields: List[Field], name: Option[String] = None) extends DocumentedJsonSchema
+    case class DocumentedRecord(fields: List[Field], name: Option[String] = None,
+                                additionalProperties:Option[DocumentedJsonSchema] = None) extends DocumentedJsonSchema
     case class Field(name: String, tpe: DocumentedJsonSchema, isOptional: Boolean, documentation: Option[String])
 
     case class DocumentedCoProd(alternatives: List[(String, DocumentedRecord)],
@@ -128,4 +129,8 @@ trait JsonSchemas extends endpoints.algebra.JsonSchemas {
                                                 cbf: CanBuildFrom[_, A, C[A]]
                                                ): JsonSchema[C[A]] = Array(jsonSchema)
 
+  def mapJsonSchema[C[_, X] <: Map[String, X], A](implicit
+                                                                jsonSchema: JsonSchema[A],
+                                                                cbf: CanBuildFrom[_, (String,A), C[String, A]]
+                                                               ): JsonSchema[C[String, A]] = DocumentedRecord(fields=Nil, additionalProperties=Some(jsonSchema))
 }

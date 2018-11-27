@@ -192,6 +192,12 @@ trait JsonSchemas {
                                                   cbf: CanBuildFrom[_, A, C[A]]
                                                  ): JsonSchema[C[A]]
 
+  //https://stackoverflow.com/questions/27357861/dictionary-like-json-schema
+  /** A JSON schema for map[String,X] */
+  implicit def mapJsonSchema[C[_, X] <: Map[String, X], A](implicit
+                                                jsonSchema: JsonSchema[A],
+                                                cbf: CanBuildFrom[_, (String,A), C[String, A]]
+                                               ): JsonSchema[C[String, A]]
 
-  
+
 }

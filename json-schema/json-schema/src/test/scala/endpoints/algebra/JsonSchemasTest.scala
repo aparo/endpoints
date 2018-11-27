@@ -26,6 +26,8 @@ trait JsonSchemasTest extends JsonSchemas {
       .invmap((User.apply _).tupled)(Function.unlift(User.unapply))
   }
 
+  case class SpecialFields(set: Set[Int], map: Map[String, User])
+
   sealed trait Foo
   case class Bar(s: String) extends Foo
   case class Baz(i: Int) extends Foo
