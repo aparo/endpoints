@@ -169,6 +169,11 @@ trait JsonSchemas
 
   implicit def booleanJsonSchema: JsonSchema[Boolean] = JsonSchema(implicitly, implicitly)
 
+  implicit def bigintJsonSchema: JsonSchema[scala.math.BigInt] = JsonSchema(implicitly, implicitly)
+  implicit def byteJsonSchema: JsonSchema[Byte] = JsonSchema(implicitly, implicitly)
+  implicit def shortJsonSchema: JsonSchema[Short] = JsonSchema(implicitly, implicitly)
+
+
   implicit def arrayJsonSchema[C[X] <: Seq[X], A](implicit jsonSchema: JsonSchema[A], cbf: CanBuildFrom[_, A, C[A]]): JsonSchema[C[A]] =
     JsonSchema(
       io.circe.Encoder.encodeIterable[A, C](jsonSchema.encoder, implicitly),

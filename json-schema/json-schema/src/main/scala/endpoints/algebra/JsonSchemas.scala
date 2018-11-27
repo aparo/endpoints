@@ -160,6 +160,15 @@ trait JsonSchemas {
   /** A JSON schema for type `Boolean` */
   implicit def booleanJsonSchema: JsonSchema[Boolean]
 
+  /** A JSON schema for type `Short` */
+  implicit def shortJsonSchema: JsonSchema[Short]
+
+  /** A JSON schema for type `Byte` */
+  implicit def byteJsonSchema: JsonSchema[Byte]
+
+  /** A JSON schema for type `BigInt` */
+  implicit def bigintJsonSchema: JsonSchema[BigInt]
+
   /** A JSON schema for sequences */
   implicit def arrayJsonSchema[C[X] <: Seq[X], A](implicit
     jsonSchema: JsonSchema[A],

@@ -95,6 +95,17 @@ trait JsonSchemas extends endpoints.algebra.JsonSchemas {
 
   lazy val booleanJsonSchema: DocumentedJsonSchema = Primitive("boolean")
 
+
+  /** A JSON schema for type `Short` */
+  lazy val shortJsonSchema: JsonSchema[Short] = Primitive("integer", format = Some("int16"))
+
+  /** A JSON schema for type `Byte` */
+  lazy val byteJsonSchema: JsonSchema[Byte] = Primitive("integer", format = Some("int8"))
+
+  /** A JSON schema for type `BigInt` */
+  lazy val bigintJsonSchema: JsonSchema[BigInt]= Primitive("integer", format = Some("int128"))
+
+
   def arrayJsonSchema[C[X] <: Seq[X], A](implicit
     jsonSchema: JsonSchema[A],
     cbf: CanBuildFrom[_, A, C[A]]

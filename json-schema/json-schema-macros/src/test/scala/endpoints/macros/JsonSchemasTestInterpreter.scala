@@ -1,14 +1,14 @@
 package endpoints.macros
 
 import scala.collection.generic.CanBuildFrom
-import language.higherKinds
-import language.implicitConversions
+import scala.language.{higherKinds, implicitConversions}
 
 
 trait JsonSchemasTestInterpreter extends endpoints.algebra.JsonSchemas {
 
   // use tagged types in tests to avoid ambiguous implicit searches on primitives
   trait Tag[+A]
+
   implicit def toTagged[A](s: String): String with Tag[A] =
     s.asInstanceOf[String with Tag[A]]
 
@@ -18,7 +18,7 @@ trait JsonSchemasTestInterpreter extends endpoints.algebra.JsonSchemas {
   type Enum[+A] = String with Tag[A]
 
   def enumeration[A](values: Seq[A])(encode: A => String)(implicit tpe: JsonSchema[String]): Enum[A] =
-    values.map(encode).mkString("<",",",">")
+    values.map(encode).mkString("<", ",", ">")
 
   def named[A, S[T] <: JsonSchema[T]](schema: S[A], name: String): S[A] =
     s"'$name'!($schema)".asInstanceOf[S[A]]
@@ -66,6 +66,13 @@ trait JsonSchemasTestInterpreter extends endpoints.algebra.JsonSchemas {
   implicit def doubleJsonSchema: JsonSchema[Double] = "double"
 
   implicit def booleanJsonSchema: JsonSchema[Boolean] = "boolean"
+
+  implicit def bigintJsonSchema: JsonSchema[BigInt] = "bigint"
+
+  implicit def byteJsonSchema: JsonSchema[Byte] = "byte"
+
+  implicit def shortJsonSchema: JsonSchema[Short] = "short"
+
 
   implicit def arrayJsonSchema[C[X] <: Seq[X], A](implicit jsonSchema: JsonSchema[A],
                                                   cbf: CanBuildFrom[_, A, C[A]]): JsonSchema[C[A]] =

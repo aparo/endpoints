@@ -31,7 +31,10 @@ class Macros(val c: blackbox.Context) extends Utils {
     typeOf[BigDecimal],
     typeOf[Float],
     typeOf[Double],
-    typeOf[Boolean]
+    typeOf[Boolean],
+    typeOf[Short],
+    typeOf[BigInt],
+    typeOf[Byte]
   )
 
   private def findRecord(tpe: Type): Option[c.Tree] = {

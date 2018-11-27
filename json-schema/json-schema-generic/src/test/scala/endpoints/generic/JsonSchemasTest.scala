@@ -17,75 +17,86 @@ class JsonSchemasTest extends FreeSpec {
     }
 
     sealed trait Quux
+
     case class QuuxA(ss: List[String]) extends Quux
+
     case class QuuxB(i: Int) extends Quux
+
     case class QuuxC(b: Boolean) extends Quux
+
     case class QuuxD() extends Quux
+
     case object QuuxE extends Quux
 
     object Quux {
       implicit val schema: JsonSchema[Quux] = genericJsonSchema[Quux]
     }
+
   }
 
   object FakeAlgebraJsonSchemas extends GenericSchemas with endpoints.algebra.JsonSchemas {
 
-      type JsonSchema[+A] = String
-      type Record[+A] = String
-      type Tagged[+A] = String
-      type Enum[+A] = String
+    type JsonSchema[+A] = String
+    type Record[+A] = String
+    type Tagged[+A] = String
+    type Enum[+A] = String
 
-      def enumeration[A](values: Seq[A])(encode: A => String)(implicit tpe: String): String =
-        s"$tpe"
+    def enumeration[A](values: Seq[A])(encode: A => String)(implicit tpe: String): String =
+      s"$tpe"
 
-      override def named[A, S[T] <: String](schema: S[A], name: String): S[A] =
-        s"'$name'!($schema)".asInstanceOf[S[A]]
+    override def named[A, S[T] <: String](schema: S[A], name: String): S[A] =
+      s"'$name'!($schema)".asInstanceOf[S[A]]
 
-      def emptyRecord: String =
-        "$"
+    def emptyRecord: String =
+      "$"
 
-      def field[A](name: String, docs: Option[String])(implicit tpe: String): String =
-        s"$name:$tpe"
+    def field[A](name: String, docs: Option[String])(implicit tpe: String): String =
+      s"$name:$tpe"
 
-      def optField[A](name: String, docs: Option[String])(implicit tpe: String): String =
-        s"$name:$tpe?"
+    def optField[A](name: String, docs: Option[String])(implicit tpe: String): String =
+      s"$name:$tpe?"
 
-      def taggedRecord[A](recordA: String, tag: String): String =
-        s"$recordA@$tag"
+    def taggedRecord[A](recordA: String, tag: String): String =
+      s"$recordA@$tag"
 
-      def withDiscriminator[A](tagged: Tagged[A], discriminatorName: String): Tagged[A] =
-        s"$tagged#$discriminatorName"
+    def withDiscriminator[A](tagged: Tagged[A], discriminatorName: String): Tagged[A] =
+      s"$tagged#$discriminatorName"
 
-      def choiceTagged[A, B](taggedA: String, taggedB: String): String =
-        s"$taggedA|$taggedB"
+    def choiceTagged[A, B](taggedA: String, taggedB: String): String =
+      s"$taggedA|$taggedB"
 
-      def zipRecords[A, B](recordA: String, recordB: String): String =
-        s"$recordA,$recordB"
+    def zipRecords[A, B](recordA: String, recordB: String): String =
+      s"$recordA,$recordB"
 
-      def invmapRecord[A, B](record: String, f: A => B, g: B => A): String = record
+    def invmapRecord[A, B](record: String, f: A => B, g: B => A): String = record
 
-      def invmapTagged[A, B](tagged: String, f: A => B, g: B => A): String = tagged
+    def invmapTagged[A, B](tagged: String, f: A => B, g: B => A): String = tagged
 
-      def invmapJsonSchema[A, B](jsonSchema: String, f: A => B, g: B => A): String = jsonSchema
+    def invmapJsonSchema[A, B](jsonSchema: String, f: A => B, g: B => A): String = jsonSchema
 
-      lazy val stringJsonSchema: String = "string"
+    lazy val stringJsonSchema: String = "string"
 
-      lazy val intJsonSchema: String = "integer"
+    lazy val intJsonSchema: String = "integer"
 
-      lazy val longJsonSchema: String = "integer"
+    lazy val longJsonSchema: String = "integer"
 
-      lazy val bigdecimalJsonSchema: String = "number"
+    lazy val bigdecimalJsonSchema: String = "number"
 
-      lazy val floatJsonSchema: String = "number"
+    lazy val floatJsonSchema: String = "number"
 
-      lazy val doubleJsonSchema: String = "number"
+    lazy val doubleJsonSchema: String = "number"
 
-      lazy val booleanJsonSchema: String = "boolean"
+    lazy val booleanJsonSchema: String = "boolean"
 
-      def arrayJsonSchema[C[X] <: Seq[X], A](implicit
-                                             jsonSchema: String,
-                                             cbf: CanBuildFrom[_, A, C[A]]
-                                            ): String = s"[$jsonSchema]"
+    lazy val shortJsonSchema: String = "short"
+
+    lazy val byteJsonSchema: String = "byte"
+    lazy val bigintJsonSchema: String = "bigint"
+
+    def arrayJsonSchema[C[X] <: Seq[X], A](implicit
+                                           jsonSchema: String,
+                                           cbf: CanBuildFrom[_, A, C[A]]
+                                          ): String = s"[$jsonSchema]"
   }
 
   "case class" in {

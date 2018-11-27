@@ -99,6 +99,20 @@ trait JsonSchemas
 
   implicit def booleanJsonSchema: JsonSchema[Boolean] = JsonSchema(implicitly, implicitly)
 
+  implicit val BigIntWrite: Writes[BigInt] = new Writes[BigInt] {
+    override def writes(bigInt: BigInt): JsValue = JsString(bigInt.toString())
+  }
+
+  implicit val BigIntRead: Reads[BigInt] = Reads {
+    case JsString(value) => JsSuccess(scala.math.BigInt(value))
+    case JsNumber(value) => JsSuccess(value.toBigInt())
+    case unknown => JsError(s"Invalid BigInt")
+  }
+
+  implicit def bigintJsonSchema: JsonSchema[scala.math.BigInt] = JsonSchema(implicitly, implicitly)
+  implicit def byteJsonSchema: JsonSchema[Byte] = JsonSchema(implicitly, implicitly)
+  implicit def shortJsonSchema: JsonSchema[Short] = JsonSchema(implicitly, implicitly)
+
   implicit def arrayJsonSchema[C[X] <: Seq[X], A](implicit jsonSchema: JsonSchema[A], cbf: CanBuildFrom[_, A, C[A]]): JsonSchema[C[A]] =
     JsonSchema(
       new Reads[C[A]] {
