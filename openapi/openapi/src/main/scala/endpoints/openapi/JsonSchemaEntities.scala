@@ -43,13 +43,14 @@ trait JsonSchemaEntities
   }
 
   private def expandRecordSchema(record: DocumentedJsonSchema.DocumentedRecord, coprodBase: Option[DocumentedCoProd] = None): Schema = {
-    var fieldsSchema = record.fields
+    val fieldsSchema = record.fields
       .map(f => Schema.Property(f.name, toSchema(f.tpe), !f.isOptional, f.documentation))
 
     val additionalProperties=record.additionalProperties.map{
       addProps =>
-        expandRecordSchema(addProps.asInstanceOf[DocumentedJsonSchema.DocumentedRecord]).asInstanceOf[Schema.Object]
+        toSchema(addProps, coprodBase)
     }
+
     //TODO check on sealed for additional properties
     coprodBase.fold[Schema] {
       Schema.Object(fieldsSchema, None, additionalProperties)

@@ -13,7 +13,7 @@ class ReferencedSchemaTest extends WordSpec with Matchers {
   case class Book(id: Int, title: String, author: String, isbnCodes: List[String], storage: Storage,
                   sets:List[Int])
 
-  case class Storages(onlineStorages:Map[String, StorageOnline])
+  case class Storages(onlineStorages:Map[String, Storage])
 
   object Fixtures extends Fixtures with openapi.Endpoints with openapi.JsonSchemaEntities {
 
@@ -24,14 +24,19 @@ class ReferencedSchemaTest extends WordSpec with Matchers {
 
   trait Fixtures extends algebra.Endpoints with algebra.JsonSchemaEntities with macros.JsonSchemas {
 
-    implicit private val storageOnlineBook: JsonSchema[StorageOnline] = genericJsonSchema[StorageOnline]
+//    implicit private val storageSchema: JsonSchema[Storage] = genericJsonSchema[Storage]
+//
+//    implicit private val storageLibSchema: JsonSchema[StorageLibrary] = genericJsonSchema[StorageLibrary]
+//
+//    implicit private val storageOLSchema: JsonSchema[StorageOnline] = genericJsonSchema[StorageOnline]
 
-    implicit private val storagesBook: JsonSchema[Storages] = genericJsonSchema[Storages]
-
-    implicit private val schemaStorage: JsonSchema[Storage] =
+    implicit private lazy val schemaStorage: JsonSchema[Storage] =
       withDiscriminator(genericJsonSchema[Storage].asInstanceOf[Tagged[Storage]], "storageType")
 
-    implicit private val schemaBook: JsonSchema[Book] = genericJsonSchema[Book]
+    implicit private lazy val storagesBook: JsonSchema[Storages] = genericJsonSchema[Storages]
+
+
+    implicit private lazy val schemaBook: JsonSchema[Book] = genericJsonSchema[Book]
 
     val listBooks = endpoint(get(path / "books"), jsonResponse[List[Book]](Some("Books list")), tags = List("Books"))
 
@@ -155,6 +160,22 @@ class ReferencedSchemaTest extends WordSpec with Matchers {
           |            }
           |          }
           |        ]
+          |      },
+          |      "endpoints.openapi.ReferencedSchemaTest.Storages" : {
+          |        "required" : [
+          |          "onlineStorages"
+          |        ],
+          |        "type" : "object",
+          |        "properties" : {
+          |          "onlineStorages" : {
+          |            "type" : "object",
+          |            "properties" : {
+          |            },
+          |            "additionalProperties" : {
+          |              "$ref" : "#/components/schemas/endpoints.openapi.ReferencedSchemaTest.Storage"
+          |            }
+          |          }
+          |        }
           |      }
           |    }
           |  },
@@ -164,6 +185,28 @@ class ReferencedSchemaTest extends WordSpec with Matchers {
           |    "version" : "0.0.0"
           |  },
           |  "paths" : {
+          |    "/storages" : {
+          |      "get" : {
+          |        "responses" : {
+          |          "200" : {
+          |            "description" : "Storage list",
+          |            "content" : {
+          |              "application/json" : {
+          |                "schema" : {
+          |                  "type" : "array",
+          |                  "items" : {
+          |                    "$ref" : "#/components/schemas/endpoints.openapi.ReferencedSchemaTest.Storages"
+          |                  }
+          |                }
+          |              }
+          |            }
+          |          }
+          |        },
+          |        "tags" : [
+          |          "Storage"
+          |        ]
+          |      }
+          |    },
           |    "/books" : {
           |      "get" : {
           |        "responses" : {
