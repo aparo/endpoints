@@ -3,6 +3,8 @@ package endpoints.openapi.model
 import io.circe.syntax._
 import io.circe.{Json, JsonObject, ObjectEncoder}
 
+import scala.collection.mutable.ListBuffer
+
 /**
   * @see [[https://github.com/OAI/OpenAPI-Specification/blob/OpenAPI.next/versions/3.0.md]]
   */
@@ -241,29 +243,33 @@ object Schema {
       case Enum(elementType, values) =>
         jsonEncoder.encodeObject(elementType).add("enum", Json.fromValues(values.map(Json.fromString)))
       case Object(properties, description, additionalProperties) =>
-        val fields =
-          "type" -> Json.fromString("object") ::
-            "properties" -> Json.fromFields(
-              properties.map { property =>
-                val propertyFields =
-                  property.description match {
-                    case None => jsonEncoder.apply(property.schema)
-                    case Some(s) => Json.fromFields(("description" -> Json.fromString(s)) +: jsonEncoder.encodeObject(property.schema).toVector)
-                  }
-                property.name -> propertyFields
-              }
-            ) ::
-            Nil
-        val additionalProps:List[(String,Json)] = additionalProperties.map(ap => "additionalProperties" -> jsonEncoder(ap)).toList
+        val fields = new ListBuffer[(String, Json)]
+        fields += "type" -> Json.fromString("object")
+
+        if(properties.nonEmpty) {
+
+          fields += "properties" -> Json.fromFields(
+            properties.map { property =>
+              val propertyFields =
+                property.description match {
+                  case None => jsonEncoder.apply(property.schema)
+                  case Some(s) => Json.fromFields(("description" -> Json.fromString(s)) +: jsonEncoder.encodeObject(property.schema).toVector)
+                }
+              property.name -> propertyFields
+            }
+          )
+        }
+        additionalProperties.map(ap => fields +=  "additionalProperties" -> jsonEncoder(ap))
+
 
 
         val fieldsWithDescription =
-          description.fold(fields)(s => "description" -> Json.fromString(s) :: fields)
+          description.fold(fields.toList)(s => "description" -> Json.fromString(s) :: fields.toList)
         val requiredProperties = properties.filter(_.isRequired)
         val fieldsWithRequired =
           if (requiredProperties.isEmpty) fieldsWithDescription
           else "required" -> Json.arr(requiredProperties.map(p => Json.fromString(p.name)): _*) :: fieldsWithDescription
-        JsonObject.fromIterable(fieldsWithRequired ++ additionalProps)
+        JsonObject.fromIterable(fieldsWithRequired)
       case OneOf(discriminatorName, alternatives, description) =>
         val mapping = alternatives.collect { case (tag, Schema.Reference(name, _)) =>
           tag -> Json.fromString(Reference.toRefPath(name))

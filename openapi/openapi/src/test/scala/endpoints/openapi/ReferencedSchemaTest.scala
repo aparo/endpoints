@@ -169,8 +169,6 @@ class ReferencedSchemaTest extends WordSpec with Matchers {
           |        "properties" : {
           |          "onlineStorages" : {
           |            "type" : "object",
-          |            "properties" : {
-          |            },
           |            "additionalProperties" : {
           |              "$ref" : "#/components/schemas/endpoints.openapi.ReferencedSchemaTest.Storage"
           |            }
